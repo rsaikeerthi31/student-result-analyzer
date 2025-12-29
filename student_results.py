@@ -5,9 +5,14 @@ students = [
     {"name": "Meena", "marks": [40, 42, 38]}
 ]
 
+PASS_MARK = 40
+
 def calculate_result(student):
-    total = sum(student["marks"])
-    average = total / len(student["marks"])
+    marks = student["marks"]
+    total = sum(marks)
+    average = total / len(marks)
+
+    subject_status = ["Pass" if m >= PASS_MARK else "Fail" for m in marks]
 
     if average >= 85:
         grade = "A"
@@ -16,20 +21,32 @@ def calculate_result(student):
     else:
         grade = "C"
 
-    result = "Pass" if average >= 40 else "Fail"
-    return total, average, grade, result
+    overall_result = "Pass" if all(m >= PASS_MARK for m in marks) else "Fail"
+
+    return total, average, grade, overall_result, subject_status
+
 
 print("STUDENT RESULT ANALYSIS\n")
 
 topper = ""
 highest_avg = 0
+pass_count = 0
 
 for s in students:
-    total, avg, grade, result = calculate_result(s)
-    print(f"{s['name']} -> Total: {total}, Avg: {avg:.2f}, Grade: {grade}, Result: {result}")
+    total, avg, grade, result, subject_status = calculate_result(s)
+
+    print(f"{s['name']}")
+    print(f"  Marks: {s['marks']}")
+    print(f"  Subject Status: {subject_status}")
+    print(f"  Total: {total}, Avg: {avg:.2f}, Grade: {grade}, Result: {result}\n")
+
+    if result == "Pass":
+        pass_count += 1
 
     if avg > highest_avg:
         highest_avg = avg
         topper = s["name"]
 
-print(f"\nTopper of the class: {topper}")
+print(f"Topper of the class: {topper}")
+print(f"Class Pass Percentage: {(pass_count / len(students)) * 100:.2f}%")
+
